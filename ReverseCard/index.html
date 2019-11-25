@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>카드뒤집기</title>
+    <style>
+        /*css주석은 //로 하면 안됨*/
+        .card {
+            display: inline-block;
+            width: 100px;
+            height: 150px;
+            margin-bottom: 20px;
+            margin-right: 20px;
+            perspective: 140px;
+        }
+        .cardInner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped .cardInner {
+            transform: rotateY(180deg); /*rotateY를 이용해 뒤집히는 애니메이션 효과를 부여한다.*/
+        }
+        .cardFront {
+            background: aquamarine;
+        } 
+        .cardFront, .cardBack {
+            position: absolute; /*absolute를 이용하면 여러 태그들을 겹칠 수 있게 된다.*/
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border: 1px solid black;
+
+        }
+        .cardBack {
+            transform: rotateY(180deg);
+        }
+        #gameResult, #resultsAverage {
+            font-weight: bold;
+            font-size: 20px;
+            padding-left: 20px;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="back"></div>
+    <div id="gameResult"></div>
+    <div id="resultsAverage"></div>
+    <script src="./src/index.js"></script>
+</body>
+</html>
