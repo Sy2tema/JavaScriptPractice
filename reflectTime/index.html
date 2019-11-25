@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>반응속도</title>
+    <style>
+        #screen {
+            width: 400px;
+            height: 180px;
+            padding-top: 120px;
+            text-align: center;
+            user-select: none;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        #screen.wait {
+            background-color: aqua;
+        }
+        #screen.ready {
+            background-color: yellow;
+        }
+        #screen.stop {
+            background-color: greenyellow;
+        }
+        #screen.result {
+            background-color: coral;
+        }
+        #screen.error {
+            background-color: red;
+            color: white;
+        }
+        #result {
+            font-size: 15px;
+            font-weight: bold;
+            padding-left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="screen" class="wait">클릭해서 시작하세요.</div>
+    <br>
+    <div id='result'></div>
+    <script src="./src/index.js"></script>
+</body>
+</html>

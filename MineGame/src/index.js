@@ -170,7 +170,7 @@ document.querySelector("#init").addEventListener("click", function () {
                         }).forEach(function (next) {
                             var parentTr = next.parentNode;
                             var parentTbody = next.parentNode.parentNode;
-                            var nextX = Array.prototype.indexOf.call(parentTr.children,     next);
+                            var nextX = Array.prototype.indexOf.call(parentTr.children, next);
                             var nextY = Array.prototype.indexOf.call(parentTbody.children, parentTr);
                             
                             if (data[nextY][nextX] !== list.open) {
