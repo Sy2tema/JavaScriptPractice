@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>가위 바위 보</title>
+    <style>
+        #computer {
+            background: url("./image/RockPaperScissors.gif") 0 0;
+            width: 156px;
+            height: 154px;
+        }
+        .btn {
+            margin-top: 15px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+   <div id="computer">
+       <img src="" alt="">
+   </div>
+   <div>
+       <button id="scissor" class="btn">가위</button>
+       <button id="rock" class="btn">바위</button>
+       <button id="paper" class="btn">보</button>
+   </div>
+   <br>
+   <div id='gameResult'></div>
+   <div id='scoreView'>현재 점수는 0점 입니다.<div>
+   <script src="./src/index.js"></script> 
+</body>
+</html>
