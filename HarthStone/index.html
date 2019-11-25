@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>짭스스톤</title>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+<body>
+    <div id="turn">내 턴</div>
+    <div id="enemy" class="noTurn">
+        <div class="cost">코스트 : <span id="enemyCost">10</span>/<span>10</span></div>
+        <div id="enemyHero">
+        </div>
+        <!--필드-->
+        <div id="enemyCards" style="height: 93px">
+        </div>
+    </div>
+    <div id="enemyDeck">
+        <div></div>
+    </div>
+    <hr/>
+    <div>
+        <button id="changeTurn">턴 넘기기</button>        
+    </div>
+    <div id="my" class="turn">
+        <div id="myCards" style="height: 93px">
+        </div>
+        <div id="myHero">    
+        </div>
+        <div class="cost">코스트 : <span id="myCost">10</span>/<span>10</span></div>
+    </div>
+    <div id="myDeck">
+        <div></div>
+    </div>
+    <div class="cardHidden">
+       <div class="card">
+            <div class="cardCost"></div>
+            <div class="cardAttack"></div>
+            <div class="cardHealthPoint"></div>
+       </div>
+    </div>
+    <script src="./src/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+html {
+    user-select: none;
+}
+hr {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+#my, #enemy {
+    /*inline은 문장의 폰트 크기와 박스 크기를 맞추는 것*/
+    /*inline-block은 문장과 함께 존재하나 박스 크기를 조절 가능하다.*/
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 28px;
+    width: 300px;
+}
+#turn {
+    margin-bottom: 10px;
+}
+.turn {
+    border: 1px solid black;
+}
+.noTurn {
+    border: 1px solid white;
+}
+#enemy {
+    vertical-align: bottom;
+}
+#myDeck, #enemyDeck {
+    display: inline-block;
+    vertical-align: top;
+    width: 200px;
+    background: silver;
+    height: 193px;
+    padding-top: 12px;
+}
+#enemyDeck, #enemyHero, #enemyCards, #myCards, #myHero, #myDeck {
+    text-align: center;
+}
+#changeTurn {
+    float: right;
+    position: relative;
+    top: -39px;
+}
+#myCards .card, #enemyCards .card {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 5px;
+}
+.card {
+    width: 50px;
+    height: 75px;
+    display: inline-block;
+    /*relative를 이용하면 static의 원 위치부터 시작해 위치를 설정할 수 있다.*/
+    position: relative;
+    border: 2px solid black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 3px;
+    background: white;
+}
+.cardName {
+    text-align: center;
+    font-size: 14px;
+}
+.cardAttack, .cardHealthPoint, .cardCost {
+    font-size: 12px;
+    text-align: center;
+    /*줄 간격을 설정한다. 이 속성을 이용하면 도형 내의 아래 여백을 설정할 수 있다.*/
+    line-height: 15px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    /*absolute는 relative와 다르게 원래 위치를 기준으로 삼지 않으며 위치를 조정할 수 있다.*/
+    position: absolute;
+    bottom: 0;
+    border: 1px solid black;
+}
+.cardAttack {
+    left: 0;
+    background-color: yellow;
+}
+.cardHealthPoint {
+    right: 0;
+    background: red;
+    color: white;
+}
+.cardCost {
+    bottom: auto;
+    top: 0;
+    left: 0;
+    background-color: blue;
+    color: white;
+}
+.cardHidden {
+    display: none;
+}
+.cost {
+    text-align: center
+}
+.cardSelected {
+    border: 2px solid yellowgreen;
+}
+.cardTurnOver {
+    border: 2px solid black;
+    background: gray;
+}
