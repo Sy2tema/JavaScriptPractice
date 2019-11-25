@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>지뢰찾기</title>
+    <style>
+        table {
+            /*border-collapse속성을 이용해 테이블 테투리와 셀 테두리 사이 간격을 조정할 수 있다.*/
+            border-collapse: collapse;
+            font-weight: bold;
+        }
+        td {
+            border: 1px solid green;
+            text-align: center;
+            line-height: 20px;
+            width: 20px;
+            height: 20px;
+            background: #494444;
+            user-select: none;
+        }
+        td.opened {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <!--placeholder를 이용해 입력 창에 대한 힌트를 부여할 수 있다.-->
+    <input id="horizontal" type="number" placeholder="가로">
+    <input id="vertical" type="number" placeholder="세로">
+    <input id="mines" type="number" placeholder="지뢰 수">
+    <button id="init">실행</button>
+    <br><br>
+    <table id="table">
+        <!--테이블에는 thead, tbody, tfoot태그를 넣을 수 있으며 각각 머리글 본문 끝말을 뜻한다.-->
+        <thead>
+            <tr>
+                <!--span은 div와는 다르게 같은 줄에 span을 여러개 붙일 수 있다.-->
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <br>
+    <div id="result"></div>
+    <script src="./src/index.js"></script>
+</body>
+</html>
