@@ -1,5 +1,98 @@
 const tetris = document.querySelector('#tetris');
+//색, 움직일 수 있는지 여부, 블록의 모양에 대한 정보를 기록한다.
+//이동 불가 블록의 경우 땅에 내려앉은 블록이기 때문이다.
+const blockList = [
+    ['red', true, [
+        [1, 1],
+        [1, 1]
+    ]],
+    ['blueviolet', true, [
+        [0, 1, 0],
+        [1, 1, 1]
+    ]],
+    ['orange', true, [
+        [1, 1, 0],
+        [0, 1, 1]
+    ]],
+    ['skyblue', true, [
+        [0, 1, 1],
+        [1, 1, 0]
+    ]],
+    ['yellowgreen', true, [
+        [1, 1, 1],
+        [0, 0, 1]
+    ]],
+    ['pink', true, [
+        [1, 1, 1],
+        [1, 0, 0]
+    ]],
+    ['crimson', true, [
+        [1, 1, 1, 1]
+    ]]
+];
+
+const blockDictionary = {
+    0: ['white', false, []],
+    1: ['red', true, [
+        [1, 1],
+        [1, 1]
+    ]],
+    2: ['blueviolet', true, [
+        [0, 1, 0],
+        [1, 1, 1]
+    ]],
+    3: ['orange', true, [
+        [1, 1, 0],
+        [0, 1, 1]
+    ]],
+    4: ['skyblue', true, [
+        [0, 1, 1],
+        [1, 1, 0]
+    ]],
+    5: ['yellowgreen', true, [
+        [1, 1, 1],
+        [0, 0, 1]
+    ]],
+    6: ['pink', true, [
+        [1, 1, 1],
+        [1, 0, 0]
+    ]],
+    7: ['crimson', true, [
+        [1, 1, 1, 1]
+    ]],
+    10: ['red', true, []],
+    20: ['blueviolet', true, []],
+    30: ['orange', true, []],
+    40: ['skyblue', true, []],
+    50: ['yellowgreen', true, []],
+    60: ['pink', true, []],
+    70: ['crimson', true, []],
+}
+
 let tetrisData = [];
+
+function drawWindow() {
+    tetrisData.forEach((tr, i) => {
+        tr.forEach((td, j) => {
+            tetris.children[i].children[j].className = blockDictionary[td][0];
+        });
+    })
+}
+
+//임의의 블록을 선택해 블록을 생성한다.
+//set property오류 발생(j부분에 문제 발생)
+function blockFactory() {
+    let block = blockList[Math.floor(Math.random() * 7)][2];
+    console.log(block);
+
+    block.forEach((tr, i) => {
+        tr.forEach((td, j) => {
+            tetrisData[i][j] = td;
+        });
+    });
+
+    drawWindow();
+}
 
 function setTable() {
     //DocumentFragment는 다른 노드들을 담는 임시 컨테이너의 역할을 하는 노드다.
@@ -14,7 +107,6 @@ function setTable() {
         }
     }
 
-    console.log(tetris, fragment);
     tetris.appendChild(fragment);
 }
 
@@ -45,3 +137,4 @@ window.addEventListener('keydown', (e) => {
 });
 
 setTable();
+blockFactory();
