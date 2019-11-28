@@ -1,140 +1,196 @@
 const tetris = document.querySelector('#tetris');
-//색, 움직일 수 있는지 여부, 블록의 모양에 대한 정보를 기록한다.
-//이동 불가 블록의 경우 땅에 내려앉은 블록이기 때문이다.
-const blockList = [
-    ['red', true, [
-        [1, 1],
-        [1, 1]
-    ]],
-    ['blueviolet', true, [
-        [0, 1, 0],
-        [1, 1, 1]
-    ]],
-    ['orange', true, [
-        [1, 1, 0],
-        [0, 1, 1]
-    ]],
-    ['skyblue', true, [
-        [0, 1, 1],
-        [1, 1, 0]
-    ]],
-    ['yellowgreen', true, [
-        [1, 1, 1],
-        [0, 0, 1]
-    ]],
-    ['pink', true, [
-        [1, 1, 1],
-        [1, 0, 0]
-    ]],
-    ['crimson', true, [
-        [1, 1, 1, 1]
-    ]]
+let tetrisData = [];
+const currentBlock;
+const nextBlock;
+const currentTopLeft = [0, 3];
+const blocks = [
+    {
+        name: 's', //네모
+        center: false,
+        numberCode: 1,
+        color: 'red',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [0, 1, 1],
+            [0, 1, 1]
+        ]]
+    }, {
+        name: 't', //T모양
+        center: true,
+        numberCode: 2,
+        color: 'blueViolet',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 1, 0]
+        ], [
+            [0, 1, 0],
+            [1, 1, 0],
+            [0, 1, 0]
+        ], [
+            [0, 1, 0],
+            [1, 1, 1],
+            [0, 0, 0]
+        ], [
+            [0, 1, 0],
+            [0, 1, 1],
+            [0, 1, 0]
+        ]]
+    }, {
+        name: 'z', //z자
+        center: true,
+        numberCode: 3,
+        color: 'orenge',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [1, 1, 0],
+            [0, 1, 1]
+        ], [
+            [0, 1, 0],
+            [1, 1, 0],
+            [1, 0, 0]
+        ], [
+            [1, 1, 0],
+            [0, 1, 1],
+            [0, 0, 0]
+        ], [
+            [0, 0, 1],
+            [0, 1, 1],
+            [0, 1, 0]
+        ]]
+    },
+    {
+        name: 'rz', //반대z자
+        center: true,
+        numberCode: 4,
+        color: 'skyblue',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [0, 1, 1],
+            [1, 1, 0]
+        ], [
+            [1, 0, 0],
+            [1, 1, 0],
+            [0, 1, 0]
+        ], [
+            [0, 1, 1],
+            [1, 1, 0],
+            [0, 0, 0]
+        ], [
+            [0, 1, 0],
+            [0, 1, 1],
+            [0, 0, 1]
+        ]]
+    },
+    {
+        name: 'l', //L자
+        center: true,
+        numberCode: 5,
+        color: 'yellowgreen',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 0, 1]
+        ], [
+            [0, 1, 0],
+            [0, 1, 0],
+            [1, 1, 0]
+        ], [
+            [1, 0, 0],
+            [1, 1, 1],
+            [0, 0, 0]
+        ], [
+            [0, 1, 1],
+            [0, 1, 0],
+            [0, 1, 0]
+        ]]
+    },
+    {
+        name: 'rl', //반대L자
+        center: true,
+        numberCode: 6,
+        color: 'pink',
+        currentShapeIndex: 0,
+        shape: [[
+            [0, 0, 0],
+            [1, 1, 1],
+            [1, 0, 0]
+        ], [
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 1, 0]
+        ], [
+            [0, 0, 1],
+            [1, 1, 1],
+            [0, 0, 0]
+        ], [
+            [0, 1, 0],
+            [0, 1, 0],
+            [0, 1, 1]
+        ]]
+    },
+    {
+        name: 'b', //길쭉한 일자
+        center: true,
+        numberCode: 7,
+        color: 'khaki',
+        currentShapeIndex: 0,
+        shape: 
+        [[
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [0, 0, 0, 0]
+        ], [
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0],
+            [0, 1, 0, 0]
+        ], [
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ], [
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0]
+        ]]
+    },
 ];
 
-const blockDictionary = {
-    0: ['white', false, []],
-    1: ['red', true, [
-        [1, 1],
-        [1, 1]
-    ]],
-    2: ['blueviolet', true, [
-        [0, 1, 0],
-        [1, 1, 1]
-    ]],
-    3: ['orange', true, [
-        [1, 1, 0],
-        [0, 1, 1]
-    ]],
-    4: ['skyblue', true, [
-        [0, 1, 1],
-        [1, 1, 0]
-    ]],
-    5: ['yellowgreen', true, [
-        [1, 1, 1],
-        [0, 0, 1]
-    ]],
-    6: ['pink', true, [
-        [1, 1, 1],
-        [1, 0, 0]
-    ]],
-    7: ['crimson', true, [
-        [1, 1, 1, 1]
-    ]],
-    10: ['red', true, []],
-    20: ['blueviolet', true, []],
-    30: ['orange', true, []],
-    40: ['skyblue', true, []],
-    50: ['yellowgreen', true, []],
-    60: ['pink', true, []],
-    70: ['crimson', true, []],
-}
+//게임에 사용될 색들의 배열
+const blockColors = ['white', 'red', 'blueViolet', 'orange', 'skyblue', 'yellowgreen', 'pink', 'khaki'];
 
-let tetrisData = [];
+//블록의 이동가능여부를 판단하는 플래그.
+const isActiveBlock = value => (value > 0 && value < 10);
+const isUnactiveBlock = value => (value === undefined || value >= 10);
 
 function drawWindow() {
-    tetrisData.forEach((tr, i) => {
-        tr.forEach((td, j) => {
-            tetris.children[i].children[j].className = blockDictionary[td][0];
-        });
-    })
+    
 }
 
-//임의의 블록을 선택해 블록을 생성한다.
-//set property오류 발생(j부분에 문제 발생)
-function blockFactory() {
-    let block = blockList[Math.floor(Math.random() * 7)][2];
-    console.log(block);
-
-    block.forEach((tr, i) => {
-        tr.forEach((td, j) => {
-            tetrisData[i][j] = td;
-        });
-    });
-
-    drawWindow();
-}
-
-function setTable() {
-    //DocumentFragment는 다른 노드들을 담는 임시 컨테이너의 역할을 하는 노드다.
+//게임 화면 생성
+function init() {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < 20; i++) {
+    [...Array(20).keys()].forEach((cell, i) => {
         const tr = document.createElement('tr');
         fragment.appendChild(tr);
-        
-        for (let j = 0; j < 10; j++) {
+        [...Array(10).keys()].forEach((row, j) => {
             const td = document.createElement('td');
             tr.appendChild(td);
-        }
-    }
+        });
+        const column = Array(10).fill(0);
+        tetrisData.push(column);
+    });
 
     tetris.appendChild(fragment);
 }
 
-//keyup은 버튼을 눌렀다가 뗄 때 발생하는 이벤트이다.
-//keydown은 버튼을 누를 때 발생하는 이벤트이며 keypress는 방향키를 인식하지 못한다.
-window.addEventListener('keyup', (e) => {
-    switch (e.code) {
-        case 'Space': //한 번에 밑으로 내리기
-            break;
-        case 'ArrowUp': //블럭 회전시키기
-            break;
-        default:
-            break;
-    }
-});
-
-window.addEventListener('keydown', (e) => {
-    switch (e.code) {
-        case 'ArrowRight':
-            break;
-        case 'ArrowLeft':
-            break;
-        case 'ArrowDown':
-            break;
-        default:
-            break;
-    }
-});
-
-setTable();
-blockFactory();
+init();

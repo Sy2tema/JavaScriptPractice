@@ -1,0 +1,32 @@
+#tetris {
+    border-collapse: collapse;
+}
+#tetris td {
+    border: 1px solid green;
+    width: 30px;
+    height: 30px;
+}
+td.white {
+    background-color: white;
+}
+td.red {
+    background-color: red;
+}
+td.blueviolet {
+    background-color: blueviolet;
+}
+td.orange {
+    background-color: orange;
+}
+td.skyblue {
+    background-color: skyblue;
+}
+td.yellowgreen {
+    background-color: yellowgreen;
+}
+td.pink {
+    background-color: pink;
+}
+td.khaki {
+    background-color: khaki;
+}
