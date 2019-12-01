@@ -362,6 +362,68 @@ document.querySelector('#backgroundmusic').addEventListener('click', function ()
     }
 });
 
+//키를 눌렀을 때 발생하는 이벤트
+window.addEventListener('keydown', (event) => {
+    switch (event.code) {
+        case 'ArrowLeft': {
+            const nextTopLeft = [currentTopLeft[0], currentTopLeft[1] - 1]; //정상적으로 왼쪽으로 이동할 경우의 좌표
+            let isMoveable = true;
+            let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
+
+            //블록 왼쪽 공간을 확인한다.
+            for (let i = currentTopLeft[1]; i < currentTopLeft[1] - currentBlockShape.length; i++) {
+                if (!isMoveable) break;
+
+                for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
+                    if (!tetrisData[i] || !tetrisData[i][j]) continue;
+                    if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j - 1])) {
+                        isMoveable = false;
+                    }
+                }
+            }
+
+            //움직일 수 있는 공간이 있다고 판별될경우 왼쪽으로 한 칸 이동시킨다.
+            if (isMoveable) {
+                currentTopLeft = nextTopLeft;
+                tetrisData.forEach((cell, i) => {
+                    for (let j = 0; j < col.length; j++) {
+                        const row = cell[j];
+                        if (tetrisData[i][j - 1] === 0 && row < 10) {
+                            tetrisData[i][j - 1] = row;
+                            tetrisData[i][j] = 0;
+                        }
+                    }
+                });
+
+                drawWindow();
+            }
+
+            break;
+        }
+        case 'ArrowRight': {
+
+            break;
+        }
+        case 'ArrowDown':
+            lowerBlock();
+    }
+});
+
+//키를 눌렀다 떼면 일어나는 이벤트.
+//keyup으로 설정할 경우 한 번만 이벤트가 실행되도록 유도할 수 있다.
+window.addEventListener('keyup', (event) => {
+    switch (event.code) {
+        case 'Space': {
+
+            break;
+        }
+        case 'ArrowUp': {
+            
+            break;
+        }
+    }
+});
+
 let interval = setInterval(lowerBlock, 2000);
 
 init();
