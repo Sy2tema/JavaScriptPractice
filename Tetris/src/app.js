@@ -1,8 +1,8 @@
 const tetris = document.querySelector('#tetris');
 let tetrisData = [];
-const currentBlock;
-const nextBlock;
-const currentTopLeft = [0, 3];
+let currentBlock;
+let nextBlock;
+let currentTopLeft = [0, 3];
 const blocks = [
     {
         name: 's', //네모
@@ -166,7 +166,7 @@ const blocks = [
 ];
 
 //게임에 사용될 색들의 배열
-const blockColors = ['red', 'blueViolet', 'orange', 'skyblue', 'yellowgreen', 'pink', 'khaki'];
+const blockColors = ['red', 'blueviolet', 'orange', 'skyblue', 'yellowgreen', 'pink', 'khaki'];
 
 //블록의 이동가능여부를 판단하는 플래그.
 const isActiveBlock = value => (value > 0 && value < 10);
@@ -177,10 +177,9 @@ function drawWindow() {
     tetrisData.forEach((cell, i) => {
         cell.forEach((row, j) => {
             if (row > 0) {
-                tetris.children[i].children[j].className 
-                    = tetrisData[i][j] >= 10 
-                    ? colors[tetrisData[i][j] / 10 - 1] 
-                    : colors[tetrisData[i][j] - 1];
+                tetris.children[i].children[j].className = tetrisData[i][j] >= 10 
+                    ? blockColors[tetrisData[i][j] / 10 - 1]
+                    : blockColors[tetrisData[i][j] - 1];
             } else {
                 tetris.children[i].children[j].className = '';
             }
@@ -190,11 +189,11 @@ function drawWindow() {
 
 //다음에 나올 블록을 화면에 표시
 function drawNextBlock() {
-    const nextTable = document.querySelector('#nextTable');
+    const nextTable = document.querySelector('#next-table');
     nextTable.querySelectorAll('tr').forEach((cell, i) => {
         Array.from(cell.children).forEach((row, j) => {
             if (nextBlock.shape[0][i] && nextBlock.shape[0][i][j] > 0) {
-                nextBlock.querySelectorAll('tr')[i].children[j].className = colors[nextBlock.numberCode - 1];
+                nextTable.querySelectorAll('tr')[i].children[j].className = blockColors[nextBlock.numberCode - 1];
             } else {
                 nextTable.querySelectorAll('tr')[i].children[j].className = 'white';
             }
@@ -233,13 +232,7 @@ function createBlock() {
     nextBlock = blocks[Math.floor(Math.random() * blocks.length)];
     drawNextBlock();
 
-    //처음 블록이 등장할 장소를 가상의 칸을 설정해 한칸 위로 설정하는데 이를 통해
-    //3X3 배열인 블록들이 최상단부터 시작할 수 있도록 만들어준다.
-    if (currentBlock.numberCode === 7) {
-        currentTopLeft = [-2, 3];
-    } else {
-        currentTopLeft = [-1, 3];
-    }
+    currentTopLeft = [-1, 3];
 
     //게임오버 조건을 판단한다.
     let isGameOver = false;
@@ -252,7 +245,7 @@ function createBlock() {
     });
 
     //블록 데이터를 생성한다.
-    currentBlock.shape[9].slice(1).forEach((cell, i) => {
+    currentBlock.shape[0].slice(1).forEach((cell, i) => {
         cell.forEach((row, j) => { 
             if (row) {
                 tetrisData[i][j + 3] = currentBlock.numberCode;
@@ -306,7 +299,8 @@ function lowerBlock() {
     //아래에 블럭이 있다면 작동하는 코드
     for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
         if (i < 0 || i >= 20) continue;
-        for (let j = currentTopLeft[1]; j < currentTopLeft[1] = currentBlockShape.length; j++) {
+        for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
+            //현재 움직이고 있는 블록일 경우
             if (isActiveBlock(tetrisData[i][j])) {
                 activeBlocks.push([i, j]);
 
@@ -317,6 +311,7 @@ function lowerBlock() {
         }
     }
 
+    //더이상 움직이지 못하는 상태일 경우
     if (!canBlockDown) {
         activeBlocks.forEach((blocks) => {
             tetrisData[blocks[0][blocks[1]]] *= 10;
@@ -351,7 +346,7 @@ document.querySelector('#restart').addEventListener('click', function () {
     if (interval) {
         clearInterval(interval);
     }
-    interval = setInterval(lowerBlock, 2000);
+    interval = setInterval(lowerBlock, 1000);
 });
 
 document.querySelector('#backgroundmusic').addEventListener('click', function () {
@@ -363,30 +358,31 @@ document.querySelector('#backgroundmusic').addEventListener('click', function ()
 });
 
 //키를 눌렀을 때 발생하는 이벤트
+//블록이 고정되지 않는 문제 발생
 window.addEventListener('keydown', (event) => {
     switch (event.code) {
         case 'ArrowLeft': {
             const nextTopLeft = [currentTopLeft[0], currentTopLeft[1] - 1]; //정상적으로 왼쪽으로 이동할 경우의 좌표
-            let isMoveable = true;
+            let isMovable = true;
             let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
 
             //블록 왼쪽 공간을 확인한다.
-            for (let i = currentTopLeft[1]; i < currentTopLeft[1] - currentBlockShape.length; i++) {
-                if (!isMoveable) break;
+            for (let i = currentTopLeft[0]; i < currentTopLeft[0] - currentBlockShape.length; i++) {
+                if (!isMovable) break;
 
                 for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
                     if (!tetrisData[i] || !tetrisData[i][j]) continue;
                     if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j - 1])) {
-                        isMoveable = false;
+                        isMovable = false;
                     }
                 }
             }
 
             //움직일 수 있는 공간이 있다고 판별될경우 왼쪽으로 한 칸 이동시킨다.
-            if (isMoveable) {
+            if (isMovable) {
                 currentTopLeft = nextTopLeft;
                 tetrisData.forEach((cell, i) => {
-                    for (let j = 0; j < col.length; j++) {
+                    for (let j = 0; j < cell.length; j++) {
                         const row = cell[j];
                         if (tetrisData[i][j - 1] === 0 && row < 10) {
                             tetrisData[i][j - 1] = row;
@@ -401,6 +397,35 @@ window.addEventListener('keydown', (event) => {
             break;
         }
         case 'ArrowRight': {
+            const nextTopLeft = [currentTopLeft[0], currentTopLeft[1] + 1];
+            let isMovable = true;
+            let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
+
+            for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
+                if (!isMovable) break;
+
+                for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
+                    if (!tetrisData[i] || !tetrisData[i][j]) continue;
+                    if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j - 1])) {
+                        isMovable = false;
+                    }
+                }
+            }
+
+            if (isMovable) {
+                currentTopLeft = nextTopLeft;
+                tetrisData.forEach((cell, i) => {
+                    for (let j = cell.length - 1; j >= 0; j--) {
+                        const row = cell[j];
+                        if (tetrisData[i][j + 1] === 0 && row < 10) {
+                            tetrisData[i][j + 1] = row;
+                            tetrisData[i][j] = 0;
+                        }
+                    }
+                });
+
+                drawWindow();
+            }
 
             break;
         }
@@ -413,18 +438,50 @@ window.addEventListener('keydown', (event) => {
 //keyup으로 설정할 경우 한 번만 이벤트가 실행되도록 유도할 수 있다.
 window.addEventListener('keyup', (event) => {
     switch (event.code) {
+        //한 번에 바닥까지 내리기
         case 'Space': {
+            while (lowerBlock()) {}
+            clearInterval(interval);
+            interval = setInterval(lowerBlock, 1000);
 
             break;
         }
+        //블록 방향 전환
         case 'ArrowUp': {
-            
+            let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
+            let isChangeable = true;
+            const nextShapeIndex = currentBlock.currentShapeIndex + 1 === currentBlock.shape.length
+                ? 0
+                : currentBlock.currentShapeIndex + 1;
+            const nextBlockShape = currentBlock.shape[nextShapeIndex];
+
+            //블록 방향을 회전한 후 공간을 확인한다.
+            for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
+                if (!isChangeable) break;
+                for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
+                    if (!tetrisData[i] || !tetrisData[i][j]) continue;
+                    if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j - 1])) {
+                        isChangeable = false;
+                    }
+                }
+            }
+
+            if (isChangeable) {
+                while (currentTopLeft[0] < 0) {
+                    lowerBlock();
+                }
+
+                //블록 방향을 회전한 후 공간을 확인한다.
+                for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
+
+                }
+            }
             break;
         }
     }
 });
 
-let interval = setInterval(lowerBlock, 2000);
+let interval = setInterval(lowerBlock, 1000);
 
 init();
 createBlock();
