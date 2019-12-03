@@ -1,7 +1,17 @@
-#tetris {
+#tetris, #next-table {
     border-collapse: collapse;
 }
+#next-table {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
 #tetris td {
+    border: 1px solid green;
+    width: 30px;
+    height: 30px;
+}
+#next-table td {
     border: 1px solid green;
     width: 30px;
     height: 30px;
