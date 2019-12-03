@@ -4,6 +4,8 @@ let currentBlock;
 let nextBlock;
 let currentTopLeft = [0, 3];
 let score;
+const bgm = document.querySelector('#backgroundmusic');
+const toggleMusic = document.querySelector('#mute');
 const blocks = [
     {
         name: 's', //네모
@@ -214,7 +216,6 @@ function createBlock() {
         cell.forEach((row, j) => {
             if (row && tetrisData[i][j + 3]) {
                 isGameOver = true;
-                break;
             }
         });
     });
@@ -232,6 +233,8 @@ function createBlock() {
     if (isGameOver) {
         clearInterval(interval);
         drawWindow();
+        bgm.pause();
+        toggleMusic.textContent = 'BGM 재생';
         alert(`게임이 종료되었습니다. 최종 점수는 ${score}점 입니다.`);
     } else {
         drawWindow();
@@ -304,6 +307,10 @@ function lowerBlock() {
     let canBlockDown = true;
     let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
 
+    if (bgm.currentTime >= 208) {
+        bgm.currentTime = 0;
+    }
+
     //아래에 블럭이 있다면 작동하는 코드
     //블록의 범위(보통은 3x3)와 바로 아래 y좌표까지를 검사하게 된다.
     for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
@@ -358,17 +365,21 @@ document.querySelector('#restart').addEventListener('click', function () {
     }
     interval = setInterval(lowerBlock, 1000);
 });
-document.querySelector('#mute').addEventListener('click', function () {
-    if (document.querySelector('#backgroundmusic').paused) {
-        document.querySelector('#backgroundmusic').play();
+toggleMusic.addEventListener('click', function () {
+    if (bgm.paused) {
+        bgm.play();
+        toggleMusic.textContent = 'BGM 정지';
     } else {
-        document.querySelector('#backgroundmusic').pause();
+        bgm.pause();
+        toggleMusic.textContent = 'BGM 재생';
     }
 });
 
 //키를 눌렀을 때 발생하는 이벤트
 //블록이 고정되지 않는 문제 발생
 //=> 확인 결과 한칸씩 내리는 함수에서 바닥인지 체크 후 10씩 곱하는 과정에서 배열 설정을 잘못해주었다는 것을 발견했다.
+//또한 긴 바 회전시 왼쪽 끝이 고정되지 않고 분리되는 문제와 여러 블록들 왼쪽 끝에 다다랐을 때 고정되지 않고 빈공간을 따라 계속 진행하는 문제도 나타났다.
+//예상대로 키 이벤트에서 문제가 있었던 것이었으며, 반복문의 종료 조건과 플래그를 false로 만드는 조건이 각각 잘못 선언되어 생긴 문제였다.
 window.addEventListener('keydown', (event) => {
     switch (event.code) {
         case 'ArrowLeft': {
@@ -377,7 +388,7 @@ window.addEventListener('keydown', (event) => {
             let currentBlockShape = currentBlock.shape[currentBlock.currentShapeIndex];
 
             //블록 왼쪽 공간을 확인한다.
-            for (let i = currentTopLeft[0]; i < currentTopLeft[0] - currentBlockShape.length; i++) {
+            for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
                 if (!isMovable) break;
 
                 for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
@@ -416,7 +427,7 @@ window.addEventListener('keydown', (event) => {
 
                 for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
                     if (!tetrisData[i] || !tetrisData[i][j]) continue;
-                    if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j - 1])) {
+                    if (isActiveBlock(tetrisData[i][j]) && isUnactiveBlock(tetrisData[i] && tetrisData[i][j + 1])) {
                         isMovable = false;
                     }
                 }
@@ -439,8 +450,13 @@ window.addEventListener('keydown', (event) => {
 
             break;
         }
-        case 'ArrowDown':
+        case 'ArrowDown': {
             lowerBlock();
+            //인터벌을 초기화해 다음 블록이 내려갈 시간에 영향을 미치지 않도록 하였다.
+            clearInterval(interval);
+            interval = setInterval(lowerBlock, 1000);
+            break;
+        }
     }
 });
 
@@ -471,8 +487,10 @@ window.addEventListener('keyup', (event) => {
             //블록 방향을 회전한 후 공간을 확인한다.
             for (let i = currentTopLeft[0]; i < currentTopLeft[0] + currentBlockShape.length; i++) {
                 if (!isChangeable) break;
+                
                 for (let j = currentTopLeft[1]; j < currentTopLeft[1] + currentBlockShape.length; j++) {
                     if (!tetrisData[i]) continue;
+                    
                     if (nextBlockShape[i - currentTopLeft[0]][j - currentTopLeft[1]] > 0 && isUnactiveBlock(tetrisData[i] && tetrisData[i][j])) {
                         isChangeable = false;
                     }
